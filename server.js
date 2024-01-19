@@ -26,8 +26,13 @@ const app = express();
 app.use(morgan("dev"));
 app.use(
   cors({
-    origin: "*",
-    // origin: ["http://localhost:5173", "http://192.168.1.101:5173/"],
+    // origin: "*",
+    origin: [
+      "https://tripuo-verse-api.azurewebsites.net",
+      "http://localhost:5173",
+      "http://192.168.1.101:5173/",
+      "https://salmon-field-030140b10.4.azurestaticapps.net"
+    ],
   })
 );
 
@@ -46,8 +51,8 @@ app.use("/api/orders", orderRoutes);
 
 app.get("/", (req, res) => {
   console.log("App running and connected to DB");
-  res.send("Good news from the server")
-})
+  res.send("Good news from the server");
+});
 
 const PORT = process.env.PORT;
 
