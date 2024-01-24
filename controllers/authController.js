@@ -9,7 +9,7 @@ const signToken = (id, isAdmin) => {
   });
 };
 
-export const signup = asyncHandler(async (req, res) => {
+export const signup = asyncHandler(async (req, res, next) => {
   try {
     const newUser = await User.create({
       firstName: req.body.firstName,
