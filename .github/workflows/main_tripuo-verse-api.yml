@@ -58,5 +58,5 @@ jobs:
         with:
           app-name: 'tripuo-verse-api'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_784364E4AB694A4A8BFD3817E9422821 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DE6C865C8D3F415981E2DBE8A6A6114D }}
           package: .
