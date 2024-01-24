@@ -40,6 +40,12 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/public", express.static(__dirname + "/public"));
+app.use("/public", express.static(__dirname + "/frontend/dist"));
+
+app.use(express.static("./frontend/dist"));
+// app.get("*", (req, res) => {
+//   res.sendFile(__dirname + "/frontend/dist/index.html");
+// });
 
 app.use("/api/services", serviceRoutes);
 app.use("/api/users", userRoutes);
@@ -51,7 +57,8 @@ app.use("/api/orders", orderRoutes);
 
 app.get("/", (req, res) => {
   console.log("App running and connected to DB");
-  res.send("Good news from the server");
+  // res.send("Good news from the server");
+  res.sendFile(__dirname + "/frontend/dist/index.html");
 });
 
 const PORT = process.env.PORT;
