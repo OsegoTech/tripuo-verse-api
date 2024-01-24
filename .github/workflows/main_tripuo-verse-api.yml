@@ -21,11 +21,11 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: npm install, build
+      - name: npm install, build, and test
         run: |
           npm install
           npm run build --if-present
-          # npm run test --if-present
+          npm run test --if-present
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
@@ -58,5 +58,5 @@ jobs:
         with:
           app-name: 'tripuo-verse-api'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_784364E4AB694A4A8BFD3817E9422821 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DE6C865C8D3F415981E2DBE8A6A6114D }}
           package: .
