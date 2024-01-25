@@ -78,6 +78,8 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+
+// check of paswword is correct
 userSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword

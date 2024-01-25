@@ -13,13 +13,13 @@ import {
 
 const router = express.Router();
 
-router.get("/", verifyTokenAndAdmin, getAllUsers);
+router.get("/", getAllUsers);
 router
   .route("/:id")
   .put(verifyTokenAndAuthorization, updateUser)
   .delete(verifyTokenAndAdmin, deleteUser)
   .get(verifyTokenAndAdmin, getUserById);
 
-  router.get("/stats", verifyTokenAndAdmin, getUserStats)
+router.get("/stats", verifyTokenAndAdmin, getUserStats);
 
 export default router;
