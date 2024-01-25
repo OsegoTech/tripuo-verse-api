@@ -9,10 +9,11 @@ import {
   upload,
   resizeProductPhoto,
 } from "../controllers/ProductController.js";
+import { protect } from "../controllers/authController.js";
 
 const router = express.Router();
 
-router.route("/").get(getProducts);
+router.route("/").get(protect, getProducts);
 router.post(
   "/",
   upload.single("image"),

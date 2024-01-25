@@ -43,9 +43,12 @@ app.use("/public", express.static(__dirname + "/public"));
 app.use("/public", express.static(__dirname + "/frontend/dist"));
 
 app.use(express.static("./frontend/dist"));
-// app.get("*", (req, res) => {
-//   res.sendFile(__dirname + "/frontend/dist/index.html");
-// });
+
+app.use((req, res, next) => {
+  res.requestTime = new Date().toISOString();
+  console.log(req.headers);
+  next();
+});
 
 app.use("/api/services", serviceRoutes);
 app.use("/api/users", userRoutes);
