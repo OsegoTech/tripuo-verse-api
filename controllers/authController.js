@@ -3,11 +3,7 @@ import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 // import AppError from "../utils/appError.js";
 
-const signToken = (id, isAdmin) => {
-  return jwt.sign({ id , isAdmin}, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
-};
+
 
 export const signup = asyncHandler(async (req, res, next) => {
   try {
@@ -20,7 +16,11 @@ export const signup = asyncHandler(async (req, res, next) => {
       passwordConfirm: req.body.passwordConfirm,
     });
 
-    const token = signToken(newUser._id, newUser.isAdmin);
+    // const token = signToken(newUser._id, newUser.isAdmin);
+
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
     res.status(201).json({
       status: "success",
       token,
