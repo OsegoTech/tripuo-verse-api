@@ -59,4 +59,4 @@ jobs:
           app-name: 'tripuo-verse-api'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DE6C865C8D3F415981E2DBE8A6A6114D }}
-          package: .
+          package: . && ./frontend
