@@ -19,6 +19,7 @@ import { dirname } from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+console.log(process.env.MONGO_URI);
 dotenv.config();
 
 connectDB();
@@ -31,7 +32,7 @@ app.use(
       "https://tripuo-verse-api.azurewebsites.net",
       "http://localhost:5173",
       "http://192.168.1.101:5173/",
-      "https://salmon-field-030140b10.4.azurestaticapps.net"
+      "https://salmon-field-030140b10.4.azurestaticapps.net",
     ],
   })
 );
