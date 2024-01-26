@@ -6,5 +6,5 @@ if (!techStack.includes("AI")) {
     console.log("Start learning AI.");
     techStack.push("AI");
     console.log(techStack);
-  }, 2000);
+  }, 3000);
 }
