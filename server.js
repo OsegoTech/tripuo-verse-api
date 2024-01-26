@@ -11,6 +11,7 @@ import productRoutes from "./routes/ProductsRoute.js";
 import cartRoutes from "./routes/CartRoutes.js";
 import orderRoutes from "./routes/OrderRoutes.js";
 import cors from "cors";
+dotenv.config()
 
 // file modules
 import { fileURLToPath } from "url";
@@ -20,7 +21,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 console.log(process.env.MONGO_URI);
-dotenv.config();
 
 connectDB();
 const app = express();
@@ -32,7 +32,7 @@ app.use(
       "https://tripuo-verse-api.azurewebsites.net",
       "http://localhost:5173",
       "http://192.168.1.101:5173/",
-      "https://salmon-field-030140b10.4.azurestaticapps.net",
+      "https://salmon-field-030140b10.4.azurestaticapps.net"
     ],
   })
 );
