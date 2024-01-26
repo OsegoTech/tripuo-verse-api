@@ -1,7 +1,7 @@
 import User from "../models/userModel.js";
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
-import AppError from "../utils/appError.js";
+import { promisify } from "util";
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -11,14 +11,16 @@ const signToken = (id) => {
 
 export const signup = asyncHandler(async (req, res, next) => {
   try {
-    const newUser = await User.create({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      whatsApp: req.body.whatsApp,
-      password: req.body.password,
-      passwordConfirm: req.body.passwordConfirm,
-    });
+    // const newUser = await User.create({
+    //   firstName: req.body.firstName,
+    //   lastName: req.body.lastName,
+    //   email: req.body.email,
+    //   whatsApp: req.body.whatsApp,
+    //   password: req.body.password,
+    //   passwordConfirm: req.body.passwordConfirm,
+    // });
+
+    const newUser = await User.create(req.body);
 
     // const token = signToken(newUser._id, newUser.isAdmin);
 
@@ -77,7 +79,6 @@ export const login = asyncHandler(async (req, res, next) => {
   }
 });
 
-
 // restricting route to only logged in users
 export const protect = asyncHandler(async (req, res, next) => {
   try {
@@ -99,24 +100,25 @@ export const protect = asyncHandler(async (req, res, next) => {
     }
 
     // 2) Verification token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
     // 3) Check if user still exists
     const currentUser = await User.findById(decoded.id);
     if (!currentUser) {
       return res.status(401).json({
         status: "fail",
-        message: "The user belonging to this token does no longer exist.",
+        message: "The user belonging to this token  no longer exist.",
       });
     }
 
     // 4) Check if user changed password after the token was issued
-    // if (currentUser.changedPasswordAfter(decoded.iat)) {
-    //   return res.status(401).json({
-    //     status: "fail",
-    //     message: "User recently changed password! Please log in again.",
-    //   });
-    // }
+    if (currentUser.changedPasswordAfter(decoded.iat)) {
+      return res.status(401).json({
+        status: "fail",
+        message: "User recently changed password, please log in again",
+      });
+    }
+
     // GRANT ACCESS TO PROTECTED ROUTE
     req.user = currentUser;
     next();
