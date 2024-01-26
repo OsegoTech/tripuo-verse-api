@@ -7,7 +7,7 @@ const ShopSchema = mongoose.Schema(
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
     },
     type: { type: String, required: true },
     shopFront: { type: String, required: true },
