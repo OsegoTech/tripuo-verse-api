@@ -1,4 +1,4 @@
-import Cart from "../models/cartModel.js";
+import Cart from "../models/CartModel.js";
 import asyncHandler from "express-async-handler";
 
 export const createCart = asyncHandler(async (req, res) => {
