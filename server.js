@@ -60,11 +60,15 @@ app.use("/api/products", productRoutes);
 app.use("/api/carts", cartRoutes);
 app.use("/api/orders", orderRoutes);
 
+// app.get("/", (req, res) => {
+//   console.log("App running and connected to DB");
+//   // res.send("Good news from the server");
+//   res.sendFile(__dirname + "/frontend/dist/index.html");
+// });
+
 app.get("/", (req, res) => {
-  console.log("App running and connected to DB");
-  // res.send("Good news from the server");
-  res.sendFile(__dirname + "/frontend/dist/index.html");
-});
+  res.send()
+})
 
 const PORT = process.env.PORT;
 
