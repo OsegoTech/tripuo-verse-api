@@ -70,7 +70,7 @@ app.get("/", (req, res) => {
   res.send("Welcome to Tripuo Verse API");
 })
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
