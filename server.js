@@ -67,7 +67,7 @@ app.use("/api/orders", orderRoutes);
 // });
 
 app.get("/", (req, res) => {
-  res.send()
+  res.send("Welcome to Tripuo Verse API");
 })
 
 const PORT = process.env.PORT;
