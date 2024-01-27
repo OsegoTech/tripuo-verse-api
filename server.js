@@ -28,13 +28,13 @@ const app = express();
 app.use(morgan("dev"));
 app.use(
   cors({
-    // origin: "*",
-    origin: [
-      "https://tripuo-verse-api.azurewebsites.net",
-      "http://localhost:5173",
-      "http://192.168.1.101:5173/",
-      "https://salmon-field-030140b10.4.azurestaticapps.net",
-    ],
+    origin: "*",
+    // origin: [
+    //   "https://tripuo-verse-api.azurewebsites.net",
+    //   "http://localhost:5173",
+    //   "http://192.168.1.101:5173/",
+    //   "https://salmon-field-030140b10.4.azurestaticapps.net",
+    // ],
   })
 );
 
