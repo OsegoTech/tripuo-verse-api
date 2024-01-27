@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import morgan from "morgan";
+// import serviceRoutes from "../routes/ServiceRoutes.js";
 import serviceRoutes from "./routes/ServiceRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/AuthRoutes.js";
@@ -11,7 +12,7 @@ import productRoutes from "./routes/ProductsRoute.js";
 import cartRoutes from "./routes/CartRoutes.js";
 import orderRoutes from "./routes/OrderRoutes.js";
 import cors from "cors";
-dotenv.config()
+dotenv.config();
 
 // file modules
 import { fileURLToPath } from "url";
@@ -32,7 +33,7 @@ app.use(
       "https://tripuo-verse-api.azurewebsites.net",
       "http://localhost:5173",
       "http://192.168.1.101:5173/",
-      "https://salmon-field-030140b10.4.azurestaticapps.net"
+      "https://salmon-field-030140b10.4.azurestaticapps.net",
     ],
   })
 );

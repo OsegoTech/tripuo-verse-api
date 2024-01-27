@@ -6,10 +6,7 @@ import {
   getUserStats,
   updateUser,
 } from "../controllers/userController.js";
-import {
-  verifyTokenAndAdmin,
-  verifyTokenAndAuthorization,
-} from "../config/verifyToken.js";
+import {verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin } from "../config/verifyToken.js"
 
 const router = express.Router();
 

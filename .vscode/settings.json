@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "/subscriptions/1917be08-36de-4e69-89fd-4c676ae7ad58/resourceGroups/appsvc_linux_centralus_basic/providers/Microsoft.Web/sites/tripuo-verse-api",
+  "appService.deploySubpath": "."
+}
