@@ -1,43 +1,28 @@
 import Product from "../models/ProductsModel.js";
 import asyncHandler from "express-async-handler";
 import multer from "multer";
-import sharp from "sharp";
+import cloudinary from "../utils/cloudinary.js";
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/productImages");
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-
-export const resizeProductPhoto = asyncHandler(async (req, res, next) => {
-  if (!req.file) return next();
-
-  req.file.filename = `product-${Date.now()}.jpeg`;
-
-  await sharp(req.file.path)
-    .resize(400, 300, { fit: "fill" })
-    .toFormat("jpeg")
-    .jpeg({ quality: 90 })
-    .toFile(`public/productImages/${req.file.filename}`);
-
-  next();
-});
-
+const storage = multer.diskStorage({});
 export const upload = multer({ storage });
 
 export const createProduct = asyncHandler(async (req, res) => {
-  const { title, description, price } = new Product(req.body);
+  const { title, description, price } = (req.body);
   console.log(req.file);
-  const image = req.file.filename;
+  const image = req.file.path;
   try {
+    // upload image to cloudinary
+    const result = await cloudinary.uploader.upload(image, {
+      folder: "products",
+      width: 400,
+      height: 300,
+      crop: "fill",
+    });
     const newProduct = await Product.create({
       title,
       description,
       price,
-      image,
+      image: result.secure_url,
     });
 
     res.status(201).json(newProduct);

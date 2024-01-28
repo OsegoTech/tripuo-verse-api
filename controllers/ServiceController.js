@@ -1,43 +1,27 @@
 import Service from "../models/ServicesModel.js";
 import asyncHandler from "express-async-handler";
 import multer from "multer";
-import sharp from "sharp";
+import cloudinary from "../utils/cloudinary.js";
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/serviceImages");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-const resizeServicePhoto = asyncHandler(async (req, res, next) => {
-  if (!req.file) return next();
-
-  req.file.filename = `service-${Date.now()}.jpeg`;
-
-  await sharp(req.file.path)
-    .resize(400, 300, { fit: "fill" })
-    .toFormat("jpeg")
-    .jpeg({ quality: 90 })
-    .toFile(`public/serviceImages/${req.file.filename}`);
-
-  next();
-});
-
+const storage = multer.diskStorage({});
 const upload = multer({ storage });
 
 const createService = asyncHandler(async (req, res, next) => {
   const { name, description, price } = req.body;
   console.log(req.file);
-  const image = req.file.filename;
+  const image = req.file.path;
   try {
+    const result = await cloudinary.uploader.upload(image, {
+      folder: "services",
+      width: 400,
+      height: 300,
+      crop: "fill",
+    });
     const service = await Service.create({
       name,
       description,
       price,
-      image,
+      image: result.secure_url,
     });
     res.status(201).json({
       status: "success",
@@ -56,4 +40,4 @@ const getServices = asyncHandler(async (req, res, next) => {
   res.status(200).json(services);
 });
 
-export { createService, upload, getServices, resizeServicePhoto };
+export { createService, upload, getServices };
