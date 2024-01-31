@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import { promisify } from "util";
+import { sendEmail } from "../utils/sendMail.js";
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -166,12 +167,37 @@ export const forgotPassword = asyncHandler(async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     // send it to user's email
-    
+    const resetURL = `${req.protocol}://${req.get(
+      "host"
+    )}/api/auth/resetPassword/${resetToken}`;
+    const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
+    console.log(user.email);
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "Your password reset token (valid for 10 min)",
+        message,
+      });
+
+      res.status(200).json({
+        status: "success",
+        message: "Token sent to email!",
+      });
+    } catch (error) {
+      user.passwordResetToken = undefined;
+      user.passwordResetExpires = undefined;
+      await user.save({ validateBeforeSave: false });
+      return res.status(500).json({
+        status: "fail",
+        message: "There was an error sending the email. Try again later!",
+      });
+    }
   } catch (error) {
-    
+    res.status(500).json({
+      status: "fail",
+      message: "Something went wrong",
+    });
   }
 });
 
-export const resetPassword = asyncHandler(async (req, res, next) => {
-
-});
+export const resetPassword = asyncHandler(async (req, res, next) => {});
