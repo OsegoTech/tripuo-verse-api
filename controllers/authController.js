@@ -3,6 +3,7 @@ import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import { promisify } from "util";
 import { sendEmail } from "../utils/sendMail.js";
+import crypto from "crypto";
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -36,7 +37,7 @@ export const signup = asyncHandler(async (req, res, next) => {
   } catch (error) {
     res.status(500).json({
       status: "fail",
-      message: error.message,
+      message: "Something went wrong",
     });
   }
 });
@@ -200,4 +201,37 @@ export const forgotPassword = asyncHandler(async (req, res, next) => {
   }
 });
 
-export const resetPassword = asyncHandler(async (req, res, next) => {});
+export const resetPassword = asyncHandler(async (req, res, next) => {
+  // 1) get user based on the token
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+
+    // 2. check if user ex
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+  // 2) if token has not expired, and there is user, set the new password
+  if (!user) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Token is invalid or has expired",
+    });
+  }
+
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+
+  // 3) update changedPasswordAt property for the user
+  const token = signToken(user._id);
+  res.status(200).json({
+    status: "success",
+    token,
+  });
+  // 4) log the user in, send JWT
+});
