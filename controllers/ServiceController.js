@@ -40,4 +40,28 @@ const getServices = asyncHandler(async (req, res, next) => {
   res.status(200).json(services);
 });
 
-export { createService, upload, getServices };
+// delete service
+const deleteService = asyncHandler(async (req, res, next) => {
+  // use find by id and delete
+  try {
+    const service = await Service.findByIdAndDelete(req.params.id);
+    if (!service) {
+      return res.status(404).json({
+        status: "fail",
+        message: "No service found with that ID",
+      });
+    }
+    res.status(204).json({
+      status: "success",
+      message: "Service deleted successfully",
+      data: null,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+});
+
+export { createService, upload, getServices, deleteService };

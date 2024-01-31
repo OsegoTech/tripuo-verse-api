@@ -8,12 +8,14 @@ import {
   upload,
   // resizeProductPhoto,
 } from "../controllers/ProductController.js";
+import { protect } from "../controllers/authController.js";
 
 const router = express.Router();
 
 router.route("/").get(getProducts);
 router.post(
   "/",
+  protect,
   upload.single("image"),
   // resizeProductPhoto,
 

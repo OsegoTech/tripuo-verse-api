@@ -129,3 +129,23 @@ export const protect = asyncHandler(async (req, res, next) => {
     });
   }
 });
+
+export const restrictTo = (...roles) => {
+  return (req, res, next) => {
+    try {
+      // roles [admin, lead-guide]. role='user'
+      if (!roles.includes(req.user.role)) {
+        return res.status(403).json({
+          status: "fail",
+          message: "You do not have permission to perform this action",
+        });
+      }
+      next();
+    } catch (error) {
+      res.status(500).json({
+        status: "fail",
+        message: "Something went wrong",
+      });
+    }
+  };
+};
