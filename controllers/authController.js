@@ -11,6 +11,27 @@ const signToken = (id) => {
   });
 };
 
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+  const cookieOptions = {
+    
+      expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN *24*60*60*1000),
+      httpOnly: true,
+    
+  }
+
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+  res.cookie('jwt', token, cookieOptions)
+  // Remove password from output
+  user.password = undefined;
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: {
+      user,
+    },
+  });
+};
 export const signup = asyncHandler(async (req, res, next) => {
   try {
     // const newUser = await User.create({
@@ -27,6 +48,7 @@ export const signup = asyncHandler(async (req, res, next) => {
     // const token = signToken(newUser._id, newUser.isAdmin);
 
     const token = signToken(newUser._id);
+
     res.status(201).json({
       status: "success",
       token,
@@ -208,7 +230,7 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
     .update(req.params.token)
     .digest("hex");
 
-    // 2. check if user ex
+  // 2. check if user ex
   const user = await User.findOne({
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() },
