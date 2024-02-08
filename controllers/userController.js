@@ -32,3 +32,22 @@ export const updateMe = asyncHandler(async (req, res, next) => {
     },
   });
 });
+
+export const deleteMe = asyncHandler(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { active: false });
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
+});
+
+export const getAllUsers = asyncHandler(async (req, res, next) => {
+  const users = await User.find();
+  res.status(200).json({
+    status: "success",
+    results: users.length,
+    data: {
+      users,
+    },
+  });
+});
