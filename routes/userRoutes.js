@@ -1,16 +1,11 @@
-import express from "express";
-import {
-  deleteUser,
-  getAllUsers,
-  getUserById,
-  getUserStats,
-  updateUser,
-} from "../controllers/userController.js";
+import express from 'express';
+import { updateMe } from '../controllers/userController.js';
+import { protect } from '../controllers/authController.js';
 
 const router = express.Router();
 
-router.get("/", getAllUsers);
-router.route("/:id").put(updateUser).delete(deleteUser).get(getUserById);
-
+router.patch('/updateMe', protect, updateMe);
 
 export default router;
+
+

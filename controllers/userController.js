@@ -1,110 +1,34 @@
-import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
-import bcrypt from "bcryptjs";
+import asyncHandler from "express-async-handler";
 
-export const getAllUsers = asyncHandler(async (req, res, next) => {
-  const query = req.query.new;
-  const users = query
-    ? await User.find().sort({ _id: -1 }).limit(2)
-    : await User.find();
-  // const users = await User.find({});
-  res.json(users);
-});
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {};
+  Object.keys(obj).forEach((el) => {
+    if (allowedFields.includes(el)) newObj[el] = obj[el];
+  });
+  return newObj;
+};
 
-export const updateUser = asyncHandler(async (req, res, next) => {
-  if (req.body.password) {
-    req.body.password = await bcrypt.hash(req.body.password, 12);
-  }
-
-  try {
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      {
-        $set: req.body,
-      },
-      { new: true }
-    );
-
-    res.status(200).json({
-      status: "success",
-      data: {
-        user: updatedUser,
-      },
-    });
-  } catch (error) {
-    res.status(500).json({
+export const updateMe = asyncHandler(async (req, res, next) => {
+  // 1) Create error if user POSTs password data
+  if (req.body.password || req.body.passwordConfirm) {
+    return res.status(400).json({
       status: "fail",
-      message: error.message,
+      message:
+        "This route is not for password updates. Please use /updateMyPassword.",
     });
   }
-});
-
-export const deleteUser = asyncHandler(async (req, res, next) => {
-  try {
-    await User.findByIdAndDelete(req.params.id);
-    res.status(200).json({
-      status: "success",
-      message: "User has been deleted",
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: "fail",
-      message: error.message,
-    });
-  }
-});
-
-export const getUserById = asyncHandler(async (req, res, next) => {
-  try {
-    const user = await User.findById(req.params.id).select("-password");
-
-    res.status(200).json({
-      status: "success",
-      data: {
-        user,
-      },
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: "fail",
-      message: error.message,
-    });
-  }
-});
-
-export const getUserStats = asyncHandler(async (req, res, next) => {
-  const today = new Date();
-  const lastYear = today.setFullYear(today.setFullYear() - 1);
-
-  try {
-    const data = await User.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: lastYear },
-        },
-      },
-      {
-        $project: {
-          month: { $month: "$createdAt" },
-        },
-      },
-      {
-        $group: {
-          _id: "$month",
-          total: { $sum: 1 },
-        },
-      },
-    ]);
-
-    res.status(200).json({
-      status: "success",
-      data,
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: "fail",
-      message: error.message,
-      
-    });
-  }
+  // 2.) Filtered out unwanted fields names that are not allowed to be updated
+  const filteredBody = filterObj(req.body, "name", "email");
+  // 3.) update user document
+  const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
+    new: true,
+    runValidators: true,
+  });
+  res.status(200).json({
+    status: "success",
+    data: {
+      user: updatedUser,
+    },
+  });
 });
