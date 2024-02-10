@@ -64,4 +64,16 @@ const deleteService = asyncHandler(async (req, res, next) => {
   }
 });
 
-export { createService, upload, getServices, deleteService };
+const latestServices = asyncHandler(async (req, res, next) => {
+  try {
+    const services = await Service.find({}).sort({ createdAt: -1 }).limit(4);
+    res.status(200).json(services);
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      message: "Error fetching latest services",
+    });
+  }
+});
+
+export { createService, upload, getServices, deleteService, latestServices };
