@@ -7,7 +7,7 @@ const storage = multer.diskStorage({});
 export const upload = multer({ storage });
 
 export const createProduct = asyncHandler(async (req, res) => {
-  const { title, description, price } = (req.body);
+  const { title, description, price } = req.body;
   console.log(req.file);
   const image = req.file.path;
   try {
@@ -83,5 +83,17 @@ export const getProducts = asyncHandler(async (req, res) => {
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json(error);
+  }
+});
+
+export const latestProducts = asyncHandler(async (req, res) => {
+  try {
+    const products = await Product.find().sort({ createdAt: -1 }).limit(4);
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({
+      status: "failed",
+      message: "Failed to get featured products!",
+    });
   }
 });

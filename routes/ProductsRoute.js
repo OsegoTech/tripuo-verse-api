@@ -6,19 +6,15 @@ import {
   updateProduct,
   deleteProduct,
   upload,
+  latestProducts,
   // resizeProductPhoto,
 } from "../controllers/ProductController.js";
 
 const router = express.Router();
 
 router.route("/").get(getProducts);
-router.post(
-  "/",
-  upload.single("image"),
-  // resizeProductPhoto,
-
-  createProduct
-);
+router.get("/latest-products", latestProducts);
+router.post("/", upload.single("image"), createProduct);
 
 router
   .route("/:id")
