@@ -51,3 +51,8 @@ export const getAllUsers = asyncHandler(async (req, res, next) => {
     },
   });
 });
+
+export const getUser = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  res.status(200).json(user);
+})

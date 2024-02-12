@@ -11,6 +11,15 @@ export const createProduct = asyncHandler(async (req, res) => {
   console.log(req.file);
   const image = req.file.path;
   try {
+    // check if a user is logged in by checking the req.user object
+    const loggedInUser = req.user;
+    console.log(loggedInUser);
+    if (!loggedInUser) {
+      return res.status(401).json({
+        status: "fail",
+        message: "You must be logged in to create a product",
+      });
+    }
     // upload image to cloudinary
     const result = await cloudinary.uploader.upload(image, {
       folder: "products",
@@ -23,6 +32,7 @@ export const createProduct = asyncHandler(async (req, res) => {
       description,
       price,
       image: result.secure_url,
+      seller: loggedInUser, // this is the user id of the logged in user
     });
 
     res.status(201).json(newProduct);
@@ -78,7 +88,7 @@ export const getProducts = asyncHandler(async (req, res) => {
         },
       });
     } else {
-      products = await Product.find();
+      products = await Product.find().populate("seller", "firstName whatsApp");
     }
     res.status(200).json(products);
   } catch (error) {

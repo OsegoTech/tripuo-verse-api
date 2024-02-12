@@ -11,6 +11,15 @@ const createService = asyncHandler(async (req, res, next) => {
   console.log(req.file);
   const image = req.file.path;
   try {
+    // check if a user is logged in by checking the req.user object
+    const loggedInUser = req.user;
+    console.log(loggedInUser);
+    if (!loggedInUser) {
+      return res.status(401).json({
+        status: "fail",
+        message: "You must be logged in to create a service",
+      });
+    }
     const result = await cloudinary.uploader.upload(image, {
       folder: "services",
       width: 400,
@@ -22,6 +31,7 @@ const createService = asyncHandler(async (req, res, next) => {
       description,
       price,
       image: result.secure_url,
+      provider: loggedInUser, // this is the user id of the logged in user
     });
     res.status(201).json({
       status: "success",
@@ -36,7 +46,10 @@ const createService = asyncHandler(async (req, res, next) => {
 });
 
 const getServices = asyncHandler(async (req, res, next) => {
-  const services = await Service.find({});
+  const services = await Service.find({}).populate(
+    "provider",
+    "firstName email whatsApp"
+  );
   res.status(200).json(services);
 });
 
@@ -76,4 +89,29 @@ const latestServices = asyncHandler(async (req, res, next) => {
   }
 });
 
-export { createService, upload, getServices, deleteService, latestServices };
+const getSingleservice = asyncHandler(async (req, res, next) => {
+  try {
+    const service = await Service.findById(req.params.id);
+    if (!service) {
+      return res.status(404).json({
+        status: "fail",
+        message: "No service found with that ID",
+      });
+    }
+    res.status(200).json(service);
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      message: "An error occurred fetching service details",
+    });
+  }
+});
+
+export {
+  createService,
+  upload,
+  getSingleservice,
+  getServices,
+  deleteService,
+  latestServices,
+};

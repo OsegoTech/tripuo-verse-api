@@ -1,18 +1,18 @@
 import Category from "../models/CategoriesModel.js";
 import expressAsyncHandler from "express-async-handler";
+// import cloudinary from "../utils/cloudinary.js";
+import multer from "multer";
+
+const storage = multer.diskStorage({});
+const upload = multer({ storage });
 
 const createCategory = expressAsyncHandler(async (req, res, next) => {
-  const category = await Category.create(req.body);
-  if (category) {
-    res.status(201).json({
-      _id: category._id,
-      name: category.name,
-      image: category.image,
-      description: category.description,
-    });
-  } else {
-    res.status(400);
-    throw new Error("Invalid Category Data");
+  const { name, description } = req.body;
+  const image = req.file.path;
+  try {
+    
+  } catch (error) {
+    
   }
 });
 
