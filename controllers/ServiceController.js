@@ -91,7 +91,10 @@ const latestServices = asyncHandler(async (req, res, next) => {
 
 const getSingleservice = asyncHandler(async (req, res, next) => {
   try {
-    const service = await Service.findById(req.params.id);
+    const service = await Service.findById(req.params.id).populate(
+      "provider",
+      "firstName email whatsApp  "
+    );
     if (!service) {
       return res.status(404).json({
         status: "fail",

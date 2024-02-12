@@ -67,7 +67,10 @@ export const deleteProduct = asyncHandler(async (req, res) => {
 
 export const getProductById = asyncHandler(async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate(
+      "seller",
+      "firstName whatsApp email"
+    );
     res.status(200).json(product);
   } catch (error) {
     res.status(500).json(error);
