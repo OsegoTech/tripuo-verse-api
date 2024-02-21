@@ -130,4 +130,13 @@ export const getProductsCount = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-}); 
+});
+
+export const getProductsByUser = asyncHandler(async (req, res) => {
+  try {
+    const products = await Product.find({ seller: req.user });
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});

@@ -110,6 +110,18 @@ const getSingleservice = asyncHandler(async (req, res, next) => {
   }
 });
 
+const getServiceByUser = asyncHandler(async (req, res, next) => {
+  try {
+    const services = await Service.find({ provider: req.user });
+    res.status(200).json(services);
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      message: "An error occurred fetching services",
+    });
+  }
+});
+
 export {
   createService,
   upload,
@@ -117,4 +129,5 @@ export {
   getServices,
   deleteService,
   latestServices,
+  getServiceByUser
 };
