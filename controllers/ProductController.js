@@ -99,6 +99,15 @@ export const getProducts = asyncHandler(async (req, res) => {
   }
 });
 
+export const getproductsByUser = asyncHandler(async (req, res) => {
+  try {
+    const products = await Product.find({ seller: req.params.userId });
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 export const latestProducts = asyncHandler(async (req, res) => {
   try {
     const products = await Product.find().sort({ createdAt: -1 }).limit(4);
@@ -110,3 +119,15 @@ export const latestProducts = asyncHandler(async (req, res) => {
     });
   }
 });
+
+export const getProductsCount = asyncHandler(async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.status(200).json({
+      status: "success",
+      results: products.length,
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}); 
