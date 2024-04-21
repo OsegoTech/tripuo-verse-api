@@ -78,11 +78,40 @@ export const getProductById = asyncHandler(async (req, res) => {
 });
 
 export const getProducts = asyncHandler(async (req, res) => {
-  const qNew = req.query.new;
-  const qCategory = req.query.category;
+  // const qNew = req.query.new;
+  // const qCategory = req.query.category;
+  const { qNew, qCategory, qSearch, qFilters } = req.query;
   try {
     let products;
-    if (qNew) {
+    if (qSearch) {
+      // perform search based on title or description
+      products = await Product.find({
+        $or: [
+          { title: { $regex: qSearch, $options: "i" } },
+          { description: { $regex: qSearch, $options: "i" } },
+        ],
+      });
+    } else if (qFilters) {
+      // parse and apply filters
+      const filters = JSON.parse(qFilters);
+      const filterQuery = {};
+
+      // construct filter query
+      if (filters.category) {
+        filterQuery.categories = { $in: filters.category };
+      }
+
+      if (filters.priceRange) {
+        filterQuery.price = {
+          $gte: filters.priceRange[0],
+          $lte: filters.priceRange[1],
+        };
+      }
+
+      // add more filters as needed
+
+      products = await Product.find(filterQuery);
+    } else if (qNew) {
       products = await Product.find().sort({ createdAt: -1 }).limit(1);
     } else if (qCategory) {
       products = await Product.find({
@@ -99,7 +128,7 @@ export const getProducts = asyncHandler(async (req, res) => {
   }
 });
 
-export const getproductsByUser = asyncHandler(async (req, res) => {
+export const getProductsByUser = asyncHandler(async (req, res) => {
   try {
     const products = await Product.find({ seller: req.params.userId });
     res.status(200).json(products);
@@ -132,7 +161,7 @@ export const getProductsCount = asyncHandler(async (req, res) => {
   }
 });
 
-export const getProductsByUser = asyncHandler(async (req, res) => {
+export const getproductsByUser = asyncHandler(async (req, res) => {
   try {
     const products = await Product.find({ seller: req.user });
     res.status(200).json(products);
