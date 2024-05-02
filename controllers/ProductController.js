@@ -139,7 +139,10 @@ export const getProductsByUser = asyncHandler(async (req, res) => {
 
 export const latestProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find().sort({ createdAt: -1 }).limit(4);
+    const products = await Product.find()
+      .sort({ createdAt: -1 })
+      .limit(4)
+      .populate("seller", "firstName whatsApp");
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json({
